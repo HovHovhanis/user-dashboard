@@ -15,7 +15,7 @@ export function AuthProvider({ children }) {
     const userId = localStorage.getItem('userId');
 
     if (token && userId) {
-      api.get(`/users/${userId}`) 
+      api.get(`/api/users/${userId}`) 
         .then(res => {
           setUser(res.data);
           setIsAuthenticated(true);
@@ -30,28 +30,26 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-    const login = async (email, password) => {
-  try {
-    // Получаем пользователя по email
-    const res = await api.get(`/users?email=${encodeURIComponent(email)}`);
-    console.log('Ответ от сервера:', res.data);
-    const users = res.data;
+  const login = async (email, password) => {
+    try {
+      const res = await api.get(`/api/users?email=${encodeURIComponent(email)}`); 
+      console.log('Ответ от сервера:', res.data);
+      const users = res.data;
 
-    if (users.length === 1 && users[0].password === password) {
-      const user = users[0];
-      localStorage.setItem('token', 'mock-token'); // мокаем токен
-      localStorage.setItem('userId', user.id);     // сохраняем id
-      setUser(user);
-      setIsAuthenticated(true);
-      navigate('/profile');
-    } else {
-      throw new Error('Неверный email или пароль');
+      if (users.length === 1 && users[0].password === password) {
+        const user = users[0];
+        localStorage.setItem('token', 'mock-token');
+        localStorage.setItem('userId', user.id);
+        setUser(user);
+        setIsAuthenticated(true);
+        navigate('/profile');
+      } else {
+        throw new Error('Неверный email или пароль');
+      }
+    } catch (err) {
+      throw err;
     }
-  } catch (err) {
-    throw err;
-  }
-};
-
+  };
 
   const logout = () => {
     localStorage.removeItem('token');
