@@ -34,6 +34,7 @@ export function AuthProvider({ children }) {
   try {
     // Получаем пользователя по email
     const res = await api.get(`/users?email=${encodeURIComponent(email)}`);
+    console.log('Ответ от сервера:', res.data);
     const users = res.data;
 
     if (users.length === 1 && users[0].password === password) {
