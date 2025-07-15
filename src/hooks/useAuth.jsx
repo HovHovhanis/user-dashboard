@@ -30,16 +30,16 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  const login = async (email, password) => {
+    const login = async (email, password) => {
   try {
-    // Теперь запрос к /api/users, проксируемый на /users
-    const res = await api.get(`/users?email=${email}&password=${password}`);
+    // Получаем пользователя по email
+    const res = await api.get(`/users?email=${encodeURIComponent(email)}`);
     const users = res.data;
 
-    if (users.length === 1) {
+    if (users.length === 1 && users[0].password === password) {
       const user = users[0];
-      localStorage.setItem('token', 'mock-token'); // Мокаем токен
-      localStorage.setItem('userId', user.id);     // Сохраняем ID пользователя
+      localStorage.setItem('token', 'mock-token'); // мокаем токен
+      localStorage.setItem('userId', user.id);     // сохраняем id
       setUser(user);
       setIsAuthenticated(true);
       navigate('/profile');
@@ -50,6 +50,7 @@ export function AuthProvider({ children }) {
     throw err;
   }
 };
+
 
   const logout = () => {
     localStorage.removeItem('token');
