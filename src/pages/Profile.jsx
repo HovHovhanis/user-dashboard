@@ -9,34 +9,35 @@ export default function Profile() {
   const [error, setError] = useState(null);
 
   const fetchUser = async () => {
-    try {
-      setLoading(true);
-      const res = await api.get('/user'); // будет запрос к /users/1 через прокси
-      setUser(res.data);
-    } catch (err) {
-      setError('Ошибка при загрузке профиля');
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  try {
+    setLoading(true);
+    // Запрос к /api/user → проксируется на /users/1
+    const res = await api.get('/user');
+    setUser(res.data);
+  } catch (err) {
+    setError('Ошибка при загрузке профиля');
+  } finally {
+    setLoading(false);
+  }
+};
   useEffect(() => {
     fetchUser();
   }, []);
 
   const handleSave = async (data) => {
-    try {
-      setLoading(true);
-      await api.put('/user', data); // обновление пользователя по пути /users/1
-      setUser(data);
-      setError(null);
-      alert('Профиль успешно обновлен');
-    } catch {
-      setError('Ошибка при сохранении профиля');
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    setLoading(true);
+    // PUT на /api/user → проксируется на /users/1
+    await api.put('/user', data);
+    setUser(data);
+    setError(null);
+    alert('Профиль успешно обновлен');
+  } catch {
+    setError('Ошибка при сохранении профиля');
+  } finally {
+    setLoading(false);
+  }
+};
 
   if (loading) return <CircularProgress />;
   if (error) return <Alert severity="error">{error}</Alert>;

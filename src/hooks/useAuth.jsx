@@ -15,7 +15,7 @@ export function AuthProvider({ children }) {
     const userId = localStorage.getItem('userId');
 
     if (token && userId) {
-      api.get(`/users/${userId}`) // НЕ через /api, потому что в baseURL /api, а здесь полный путь
+      api.get(`/users/${userId}`) 
         .then(res => {
           setUser(res.data);
           setIsAuthenticated(true);
@@ -31,24 +31,25 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = async (email, password) => {
-    try {
-      const res = await api.get(`/users?email=${email}&password=${password}`); 
-      const users = res.data;
+  try {
+    // Теперь запрос к /api/users, проксируемый на /users
+    const res = await api.get(`/users?email=${email}&password=${password}`);
+    const users = res.data;
 
-      if (users.length === 1) {
-        const user = users[0];
-        localStorage.setItem('token', 'mock-token'); // Мокаем токен
-        localStorage.setItem('userId', user.id);     // Сохраняем ID пользователя
-        setUser(user);
-        setIsAuthenticated(true);
-        navigate('/profile');
-      } else {
-        throw new Error('Неверный email или пароль');
-      }
-    } catch (err) {
-      throw err;
+    if (users.length === 1) {
+      const user = users[0];
+      localStorage.setItem('token', 'mock-token'); // Мокаем токен
+      localStorage.setItem('userId', user.id);     // Сохраняем ID пользователя
+      setUser(user);
+      setIsAuthenticated(true);
+      navigate('/profile');
+    } else {
+      throw new Error('Неверный email или пароль');
     }
-  };
+  } catch (err) {
+    throw err;
+  }
+};
 
   const logout = () => {
     localStorage.removeItem('token');

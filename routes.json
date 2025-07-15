@@ -1,4 +1,5 @@
 {
   "/api/user": "/users/1",
-  "/api/orders": "/orders"
+  "/api/orders": "/orders",
+  "/api/users": "/users"
 }
