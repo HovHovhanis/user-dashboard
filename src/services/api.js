@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:3001/api', // обращаемся к проксированным путям
+  baseURL: import.meta.env.VITE_API_URL,  // будет браться из .env
 });
 
 api.interceptors.request.use((config) => {
